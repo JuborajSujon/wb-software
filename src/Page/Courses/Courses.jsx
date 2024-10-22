@@ -8,7 +8,7 @@ const Courses = () => {
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
   const count = courseData?.length;
-  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const [itemsPerPage, setItemsPerPage] = useState(2);
   const numberOfPages = Math.ceil(count / itemsPerPage);
 
   const pages = [...Array(numberOfPages + 1).keys()].slice(1);
@@ -34,6 +34,11 @@ const Courses = () => {
     setCurrentPage(page);
   };
 
+  // display product base on pagination
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedItems = courseData?.slice(startIndex, endIndex);
+
   // Add to cart
   const addToCart = (course) => {
     const cart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
@@ -42,13 +47,13 @@ const Courses = () => {
   };
 
   return (
-    <div className="m-mt_16px h-[calc(100vh-110px)] flex flex-col items-center justify-between">
+    <div className="m-mt_16px  flex flex-col items-center justify-between">
       {isLoading && (
         <div className="text-center text-3xl text-violet-600">Loading...</div>
       )}
       <div></div>
-      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-        {courseData?.map((course) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 items-center justify-items-center">
+        {displayedItems?.map((course) => (
           <div
             key={course.id}
             className=" bg-white shadow-lg rounded-lg overflow-hidden">
