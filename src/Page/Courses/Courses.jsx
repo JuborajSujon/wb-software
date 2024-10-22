@@ -1,9 +1,12 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import useProduct from "../../Hooks/useProduct";
+import { BasicContext } from "../../ContextAPIs/BasicProvider";
 
 const Courses = () => {
   const [product, isLoading] = useProduct();
   const { courseData = [] } = product || {};
+
+  const { reload, setReload } = useContext(BasicContext);
 
   // Pagination
   const [currentPage, setCurrentPage] = useState(1);
@@ -42,8 +45,15 @@ const Courses = () => {
   // Add to cart
   const addToCart = (course) => {
     const cart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
-    const newCart = [...cart, course];
-    localStorage.setItem("CourseDraft", JSON.stringify(newCart));
+    let existingCourse = cart.find((item) => item.id === course.id);
+    if (existingCourse) {
+      existingCourse.unitQuantities += 1;
+    } else {
+      cart.push({ ...course, unitQuantities: 1 });
+    }
+
+    localStorage.setItem("CourseDraft", JSON.stringify(cart));
+    setReload(!reload);
   };
 
   return (

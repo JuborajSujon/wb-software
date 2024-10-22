@@ -74,7 +74,7 @@ const MenuBar = () => {
                   </span>
                 </Link>
               </li> */}
-              <li
+              {/* <li
                 className={` px-pt_8px my-mt_4px hover:cursor-pointer hover:rounded-rounded_primary hover: duration-200  ${
                   selected === "/checkout"
                     ? "bg-bg_selected rounded-rounded_primary text-white hover:text-white font-medium hover:bg-bg_selected"
@@ -91,7 +91,7 @@ const MenuBar = () => {
                     Checkout
                   </span>
                 </Link>
-              </li>
+              </li> */}
 
               <li
                 className={` px-pt_8px my-mt_4px hover:cursor-pointer hover:rounded-rounded_primary hover: duration-200   ${

@@ -8,6 +8,7 @@ import useUser from "../../Security/useUser";
 import { FaUserCircle } from "react-icons/fa";
 import useSmallScreen from "../../Hooks/useSmallScreen";
 import { FaCartArrowDown } from "react-icons/fa";
+import { BasicContext } from "../../ContextAPIs/BasicProvider";
 
 const NavbarTop = () => {
   const { open, setOpen, sidebarRef } = useContext(OrderContext);
@@ -17,6 +18,8 @@ const NavbarTop = () => {
   const [userData, , refetch] = useUser();
   const imgUrl = `https://littleaccount.com/uploads/userProfile/`;
 
+  const { reload } = useContext(BasicContext);
+
   const [cartList, setCartList] = useState([]);
 
   // get cart list from local storage
@@ -24,7 +27,7 @@ const NavbarTop = () => {
     if (localStorage.getItem("CourseDraft")) {
       setCartList(JSON.parse(localStorage.getItem("CourseDraft")));
     }
-  }, []);
+  }, [reload]);
 
   const handleLogout = async () => {
     try {
@@ -89,19 +92,27 @@ const NavbarTop = () => {
                 </div>
               </div>
 
-              <div className="absolute top-10 right-3 bg-_white shadow-md rounded-sm overflow-hidden pt-2 w-64 z-10 group-hover:scale-100 transition-transform duration-300 transform origin-top-right scale-0">
-                <h2 className="text-black">
-                  {cartList?.map((item) => (
-                    <div
-                      key={item?.id}
-                      className="flex items-center justify-between px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
-                      <div className="flex w-full justify-between gap-4">
-                        <h2>{item?.course_name}</h2>
-                        <h2>{item?.regular_price}</h2>
-                      </div>
-                    </div>
-                  ))}
-                </h2>
+              <div className="absolute top-10 right-3 bg-_white shadow-md rounded-sm overflow-hidden pt-2 w-96 z-10 group-hover:scale-100 transition-transform duration-300 transform origin-top-right scale-0 p-2">
+                <div className="text-black max-h-72 overflow-y-auto">
+                  <table className="w-full text-left">
+                    <thead>
+                      <tr className="text-violet-500">
+                        <th>Name</th>
+                        <th>QTY</th>
+                        <th className="text-right">Unit Price</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {cartList?.map((item, index) => (
+                        <tr key={index}>
+                          <td>{item?.course_name}</td>
+                          <td>{item?.unitQuantities}</td>
+                          <td className="text-right">{item?.regular_price}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             </div>
           </div>
