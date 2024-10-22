@@ -1,5 +1,5 @@
 import { MdMenu } from "react-icons/md";
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useState } from "react";
 import { OrderContext } from "../../ContextAPIs/OrderProvider";
 import { Link, useNavigate } from "react-router-dom";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
@@ -16,6 +16,17 @@ const NavbarTop = () => {
   const navigate = useNavigate();
   const [userData, , refetch] = useUser();
   const imgUrl = `https://littleaccount.com/uploads/userProfile/`;
+
+  const [cartList, setCartList] = useState([]);
+
+  // get cart list from local storage
+  useEffect(() => {
+    if (localStorage.getItem("CourseDraft")) {
+      setCartList(JSON.parse(localStorage.getItem("CourseDraft")));
+    }
+  }, []);
+
+  console.log(cartList);
 
   const handleLogout = async () => {
     try {
@@ -70,49 +81,70 @@ const NavbarTop = () => {
         </div>
         <div className="hidden lg:block"></div>
 
-        <div className="flex flex-row items-center justify-center text-text_sm font-semibold relative group">
-          <div className="relative">
-            <FaCartArrowDown className="w-8 h-8 text-black mx-auto" />
-            <div className="badge badge-outline bg-violet-500 absolute top-0 left-7">
-              0
+        <div className="flex items-center gap-6">
+          <div className="">
+            <div className="flex flex-row items-center justify-center text-text_sm font-semibold relative group">
+              <div onClick={() => navigate("/cart")} className="relative">
+                <FaCartArrowDown className="w-8 h-8 text-black mx-auto" />
+                <div className="badge badge-outline bg-violet-500 absolute top-0 left-7">
+                  {cartList?.length}
+                </div>
+              </div>
+
+              <div className="absolute top-10 right-3 bg-_white shadow-md rounded-sm overflow-hidden pt-2 w-64 z-10 group-hover:scale-100 transition-transform duration-300 transform origin-top-right scale-0">
+                <h2 className="text-black">
+                  {cartList?.map((item) => (
+                    <div
+                      key={item?.id}
+                      className="flex items-center justify-between px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
+                      <div className="flex w-full justify-between gap-4">
+                        <h2>{item?.course_name}</h2>
+                        <h2>{item?.regular_price}</h2>
+                      </div>
+                    </div>
+                  ))}
+                </h2>
+              </div>
             </div>
           </div>
-          <div className="flex items-center gap-8">
-            <h1 className="text-blue-500 text-xl font-medium">
-              {userData?.userData.name}
-            </h1>
-            {userData?.userData.image ? (
-              <img
-                className="w-[40px] h-[40px] rounded-full"
-                src={`${imgUrl}${userData.userData.image}`}
-                alt=""
-              />
-            ) : (
-              <FaUserCircle className="w-[40px] h-[40px] rounded-full text-black" />
-            )}
-          </div>
+          <div className="flex flex-row items-center justify-center text-text_sm font-semibold relative group">
+            <div className="flex items-center gap-8">
+              <h1 className="text-blue-500 text-xl font-medium">
+                {userData?.userData.name}
+              </h1>
+              {userData?.userData.image ? (
+                <img
+                  className="w-[40px] h-[40px] rounded-full"
+                  src={`${imgUrl}${userData.userData.image}`}
+                  alt=""
+                />
+              ) : (
+                <FaUserCircle className="w-[40px] h-[40px] rounded-full text-black" />
+              )}
+            </div>
 
-          <div className="absolute top-10 right-3 bg-_white shadow-md rounded-sm overflow-hidden pt-2 w-48 z-10 group-hover:scale-100 transition-transform duration-300 transform origin-top-right scale-0">
-            {userData && (
-              <Link
-                to="/profile"
-                className="block px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
-                Profile
-              </Link>
-            )}
-            {userData ? (
-              <Link
-                onClick={handleLogout}
-                className="block px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
-                Logout
-              </Link>
-            ) : (
-              <Link
-                to="/login"
-                className="block px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
-                Login
-              </Link>
-            )}
+            <div className="absolute top-10 right-3 bg-_white shadow-md rounded-sm overflow-hidden pt-2 w-48 z-10 group-hover:scale-100 transition-transform duration-300 transform origin-top-right scale-0">
+              {userData && (
+                <Link
+                  to="/profile"
+                  className="block px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
+                  Profile
+                </Link>
+              )}
+              {userData ? (
+                <Link
+                  onClick={handleLogout}
+                  className="block px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
+                  Logout
+                </Link>
+              ) : (
+                <Link
+                  to="/login"
+                  className="block px-4 py-2 text-black hover:bg-bg_selected hover:text-white">
+                  Login
+                </Link>
+              )}
+            </div>
           </div>
         </div>
       </ul>

@@ -4,6 +4,13 @@ const Courses = () => {
   const [product, isLoading] = useProduct();
   const { courseData = [] } = product || {};
 
+  // Add to cart
+  const addToCart = (course) => {
+    const cart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
+    const newCart = [...cart, course];
+    localStorage.setItem("CourseDraft", JSON.stringify(newCart));
+  };
+
   return (
     <div className="m-mt_16px">
       {isLoading && (
@@ -59,7 +66,9 @@ const Courses = () => {
                 {/* <span className="text-green-600 text-sm">Earn Tk 48</span> */}
               </div>
               <div className="mt-4 flex gap-2">
-                <button className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-500 w-full font-bold text-md">
+                <button
+                  onClick={() => addToCart(course)}
+                  className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-500 w-full font-bold text-md">
                   Add To Cart
                 </button>
               </div>
