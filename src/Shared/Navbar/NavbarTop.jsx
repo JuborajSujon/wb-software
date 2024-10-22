@@ -26,8 +26,6 @@ const NavbarTop = () => {
     }
   }, []);
 
-  console.log(cartList);
-
   const handleLogout = async () => {
     try {
       const res = await axiosSecure("/api/logout");

@@ -1,8 +1,38 @@
+import { useState } from "react";
 import useProduct from "../../Hooks/useProduct";
 
 const Courses = () => {
   const [product, isLoading] = useProduct();
   const { courseData = [] } = product || {};
+
+  // Pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const count = courseData?.length;
+  const [itemsPerPage, setItemsPerPage] = useState(1);
+  const numberOfPages = Math.ceil(count / itemsPerPage);
+
+  const pages = [...Array(numberOfPages + 1).keys()].slice(1);
+
+  // Handle Previous page
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      const newPage = currentPage - 1;
+      setCurrentPage(newPage);
+    }
+  };
+
+  // Handle Next page
+  const handleNextPage = () => {
+    if (currentPage < numberOfPages) {
+      const newPage = currentPage + 1;
+      setCurrentPage(newPage);
+    }
+  };
+
+  // Handle page change
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
   // Add to cart
   const addToCart = (course) => {
@@ -12,10 +42,11 @@ const Courses = () => {
   };
 
   return (
-    <div className="m-mt_16px">
+    <div className="m-mt_16px h-[calc(100vh-110px)] flex flex-col items-center justify-between">
       {isLoading && (
         <div className="text-center text-3xl text-violet-600">Loading...</div>
       )}
+      <div></div>
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {courseData?.map((course) => (
           <div
@@ -75,6 +106,31 @@ const Courses = () => {
             </div>
           </div>
         ))}
+      </div>
+
+      <div className="flex gap-1 justify-center mt-8">
+        <button
+          onClick={handlePreviousPage}
+          className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-300">
+          Previous
+        </button>
+
+        {pages.map((page) => (
+          <button
+            key={page}
+            onClick={() => handlePageChange(page)}
+            className={`bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-300 ${
+              currentPage === page ? "!bg-violet-400 text-white" : ""
+            }`}>
+            {page}
+          </button>
+        ))}
+
+        <button
+          onClick={handleNextPage}
+          className="bg-gray-200 text-gray-700 font-bold py-2 px-4 rounded hover:bg-gray-300">
+          Next
+        </button>
       </div>
     </div>
   );
