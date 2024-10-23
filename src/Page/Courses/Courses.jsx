@@ -49,6 +49,7 @@ const Courses = () => {
     if (existingCourse) {
       existingCourse.unitQuantities += 1;
     } else {
+      cart.length = 0;
       cart.push({ ...course, unitQuantities: 1 });
     }
 
@@ -103,7 +104,12 @@ const Courses = () => {
                     Tk {course?.regular_price}
                   </span>
                   <span className="text-green-600 text-md font-bold ml-2">
-                    -70% ({course?.regular_price - course?.discount_price})
+                    -
+                    {(
+                      (course?.regular_price / course?.discount_price) *
+                      100
+                    ).toFixed(0)}
+                    {"%  "}({course?.regular_price - course?.discount_price})
                   </span>
                   <span className="text-black text-lg font-bold ml-2">
                     Tk {course?.discount_price}

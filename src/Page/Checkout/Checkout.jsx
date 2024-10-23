@@ -8,25 +8,33 @@ const Checkout = () => {
   const [cart, setCart] = useState([]);
   const { reload, setReload } = useContext(BasicContext);
   const { setOrderDetails } = useContext(OrderContext);
+  const [file, setFile] = useState(null);
+  const [preview, setPreview] = useState(null);
   const [formData, setFormData] = useState({
-    fullName: "",
+    name: "",
     formNo: "",
-    parentName: "",
-    parentNumber: "",
-    school: "",
-    jobInfo: "",
+    father_name: "",
+    father_phone_no: "",
+    school_collage_name: "",
+    job_title: "",
     email: "",
     gender: "",
-    presentAddress: "",
-    permanentAddress: "",
-    nid: "",
-    mobile: "",
-    guardianName: "",
-    dob: "",
-    bloodGroup: "",
+    present_address: "",
+    permanent_address: "",
+    nid_no: "",
+    phone_no: "",
+    local_guardian_name: "",
+    local_guardian_phone_no: "",
+    date_of_birth: "",
+    blood_group: "",
   });
-
-  const navgivate = useNavigate();
+  console.log(cart);
+  // const navgivate = useNavigate();
+  const courseFee = cart[0].regular_price;
+  const courseQty = cart[0].unitQuantities;
+  const totalCourseFee = 100000;
+  const discountCourseFee = 0;
+  const subTotalCourseFee = 100000;
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
@@ -39,6 +47,28 @@ const Checkout = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
   };
 
+  // Handle file input change
+  const handleFileChange = (e) => {
+    const selectedFile = e.target.files[0];
+    setFile(selectedFile);
+
+    // Generate a URL for previewing the image
+    const imageUrl = URL.createObjectURL(selectedFile);
+    setPreview(imageUrl);
+  };
+
+  const handlePhotoUpload = () => {
+    if (!file) {
+      alert("Please select a photo first");
+      return;
+    }
+    // Create FormData and append the file
+    const formData = new FormData();
+    formData.append("photo", file);
+
+    console.log(formData);
+  };
+
   // Update form state
   const handleInputChange = (e) => {
     setFormData({
@@ -46,15 +76,25 @@ const Checkout = () => {
       [e.target.id]: e.target.value,
       courseData: cart,
       formNo: generateFormId(),
+      course_id: 1,
+      admission_date: new Date().toISOString(),
+      course_fee: 0,
+      course_qty: 1,
+      total_course_fee: 100000,
+      discount_course_fee: 0,
+      sub_total_course_fee: 100000,
     });
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    setOrderDetails(formData);
-    localStorage.removeItem("CourseDraft");
-    navgivate("/order-details");
+    handlePhotoUpload();
+    console.log(formData);
+    // setOrderDetails(formData);
+    // localStorage.setItem("CourseDraft", JSON.stringify([]));
+    // setReload(!reload);
+    // navgivate("/order-details");
   };
 
   // Handle delete course from cart
@@ -123,28 +163,28 @@ const Checkout = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label
-                htmlFor="fullName"
+                htmlFor="name"
                 className="block font-semibold text-base mb-2">
                 Full Name:
               </label>
               <input
                 type="text"
-                id="fullName"
-                value={formData.fullName}
+                id="name"
+                value={formData.name}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             <div>
               <label
-                htmlFor="mobile"
+                htmlFor="phone_no"
                 className="block font-semibold text-base mb-2">
                 Mobile No:
               </label>
               <input
                 type="text"
-                id="mobile"
-                value={formData.mobile}
+                id="phone_no"
+                value={formData.phone_no}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
@@ -154,28 +194,28 @@ const Checkout = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label
-                htmlFor="parentName"
+                htmlFor="father_name"
                 className="block font-semibold text-base mb-2">
                 Father/Mother Name:
               </label>
               <input
                 type="text"
-                id="parentName"
-                value={formData.parentName}
+                id="father_name"
+                value={formData.father_name}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             <div>
               <label
-                htmlFor="parentNumber"
+                htmlFor="father_phone_no"
                 className="block font-semibold text-base mb-2">
                 Parent Mobile No:
               </label>
               <input
                 type="text"
-                id="parentNumber"
-                value={formData.parentNumber}
+                id="father_phone_no"
+                value={formData.father_phone_no}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
@@ -185,28 +225,28 @@ const Checkout = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label
-                htmlFor="school"
+                htmlFor="school_collage_name"
                 className="block font-semibold text-base mb-2">
                 School/College:
               </label>
               <input
                 type="text"
-                id="school"
-                value={formData.school}
+                id="school_collage_name"
+                value={formData.school_collage_name}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             <div>
               <label
-                htmlFor="jobInfo"
+                htmlFor="job_title"
                 className="block font-semibold text-base mb-2">
                 Job Information:
               </label>
               <input
                 type="text"
-                id="jobInfo"
-                value={formData.jobInfo}
+                id="job_title"
+                value={formData.job_title}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
@@ -250,26 +290,26 @@ const Checkout = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label
-                htmlFor="presentAddress"
+                htmlFor="present_address"
                 className="block font-semibold text-base mb-2">
                 Present Address:
               </label>
               <textarea
-                id="presentAddress"
-                value={formData.presentAddress}
+                id="present_address"
+                value={formData.present_address}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             <div>
               <label
-                htmlFor="permanentAddress"
+                htmlFor="permanent_address"
                 className="block font-semibold text-base mb-2">
                 Permanent Address:
               </label>
               <textarea
-                id="permanentAddress"
-                value={formData.permanentAddress}
+                id="permanent_address"
+                value={formData.permanent_address}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
@@ -279,26 +319,26 @@ const Checkout = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label
-                htmlFor="nid"
+                htmlFor="nid_no"
                 className="block font-semibold text-base mb-2">
                 NID Number:
               </label>
               <input
                 type="text"
-                id="nid"
-                value={formData.nid}
+                id="nid_no"
+                value={formData.nid_no}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             <div>
               <label
-                htmlFor="bloodGroup"
+                htmlFor="blood_group"
                 className="block font-semibold text-base mb-2">
                 Blood Group:
               </label>
               <select
-                id="bloodGroup"
+                id="blood_group"
                 onChange={handleInputChange}
                 defaultValue="default"
                 className="w-full border border-gray-300 rounded-md p-2">
@@ -318,31 +358,68 @@ const Checkout = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
             <div>
               <label
-                htmlFor="guardianName"
+                htmlFor="local_guardian_name"
                 className="block font-semibold text-base mb-2">
                 Local Guardian’s Name:
               </label>
               <input
                 type="text"
-                id="guardianName"
-                value={formData.guardianName}
+                id="local_guardian_name"
+                value={formData.local_guardian_name}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
             </div>
             <div>
               <label
-                htmlFor="dob"
+                htmlFor="local_guardian_phone_no"
+                className="block font-semibold text-base mb-2">
+                Local Guardian’s Phone:
+              </label>
+              <input
+                type="text"
+                id="local_guardian_phone_no"
+                value={formData.local_guardian_phone_no}
+                onChange={handleInputChange}
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+            <div>
+              <label
+                htmlFor="date_of_birth"
                 className="block font-semibold text-base mb-2">
                 Date of Birth:
               </label>
               <input
                 type="date"
-                id="dob"
-                value={formData.dob}
+                id="date_of_birth"
+                value={formData.date_of_birth}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+            </div>
+            <div>
+              <label
+                htmlFor="photo"
+                className="block font-semibold text-base mb-2">
+                Student Photo
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                id="photo"
+                onChange={handleFileChange}
+                className="w-full border border-gray-300 rounded-md p-2"
+              />
+
+              {preview && (
+                <div>
+                  <h3>Image Preview:</h3>
+                  <img src={preview} alt="Preview" width="200px" />
+                </div>
+              )}
             </div>
           </div>
         </div>

@@ -4,10 +4,13 @@ import { OrderContext } from "../../ContextAPIs/OrderProvider";
 const OrderDetails = () => {
   const { orderDetails } = useContext(OrderContext);
 
-  const grandTotalPrice = orderDetails?.courseData.reduce(
-    (total, item) => total + item.unitQuantities * item.discount_price,
-    0
-  );
+  const grandTotalPrice =
+    orderDetails?.courseData?.length > 0
+      ? orderDetails.courseData.reduce(
+          (total, item) => total + item.unitQuantities * item.discount_price,
+          0
+        )
+      : 0;
 
   return (
     <div className=" m-mt_16px">
