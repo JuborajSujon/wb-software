@@ -34,12 +34,18 @@ const Checkout = () => {
     setCart(storedCart);
   }, [reload]);
 
+  // Function to generate a 6-digit form ID
+  const generateFormId = () => {
+    return Math.floor(100000 + Math.random() * 900000).toString();
+  };
+
   // Update form state
   const handleInputChange = (e) => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
       courseData: cart,
+      formNo: generateFormId(),
     });
   };
 
@@ -131,14 +137,14 @@ const Checkout = () => {
             </div>
             <div>
               <label
-                htmlFor="formNo"
+                htmlFor="mobile"
                 className="block font-semibold text-base mb-2">
-                Form no:
+                Mobile No:
               </label>
               <input
                 type="text"
-                id="formNo"
-                value={formData.formNo}
+                id="mobile"
+                value={formData.mobile}
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
@@ -164,7 +170,7 @@ const Checkout = () => {
               <label
                 htmlFor="parentNumber"
                 className="block font-semibold text-base mb-2">
-                Number:
+                Parent Mobile No:
               </label>
               <input
                 type="text"
@@ -287,17 +293,25 @@ const Checkout = () => {
             </div>
             <div>
               <label
-                htmlFor="mobile"
+                htmlFor="bloodGroup"
                 className="block font-semibold text-base mb-2">
-                Mobile No:
+                Blood Group:
               </label>
-              <input
-                type="text"
-                id="mobile"
-                value={formData.mobile}
+              <select
+                id="bloodGroup"
                 onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md p-2"
-              />
+                defaultValue="default"
+                className="w-full border border-gray-300 rounded-md p-2">
+                <option value="default">Select Blood Group</option>
+                <option value="A+">A+</option>
+                <option value="A-">A-</option>
+                <option value="B+">B+</option>
+                <option value="B-">B-</option>
+                <option value="AB+">AB+</option>
+                <option value="AB-">AB-</option>
+                <option value="O+">O+</option>
+                <option value="O-">O-</option>
+              </select>
             </div>
           </div>
 
@@ -329,31 +343,6 @@ const Checkout = () => {
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
-            </div>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-            <div>
-              <label
-                htmlFor="bloodGroup"
-                className="block font-semibold text-base mb-2">
-                Blood Group:
-              </label>
-              <select
-                id="bloodGroup"
-                onChange={handleInputChange}
-                defaultValue="default"
-                className="w-full border border-gray-300 rounded-md p-2">
-                <option value="default">Select Blood Group</option>
-                <option value="A+">A+</option>
-                <option value="A-">A-</option>
-                <option value="B+">B+</option>
-                <option value="B-">B-</option>
-                <option value="AB+">AB+</option>
-                <option value="AB-">AB-</option>
-                <option value="O+">O+</option>
-                <option value="O-">O-</option>
-              </select>
             </div>
           </div>
         </div>

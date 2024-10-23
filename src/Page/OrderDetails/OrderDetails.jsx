@@ -3,6 +3,12 @@ import { OrderContext } from "../../ContextAPIs/OrderProvider";
 
 const OrderDetails = () => {
   const { orderDetails } = useContext(OrderContext);
+
+  const grandTotalPrice = orderDetails?.courseData.reduce(
+    (total, item) => total + item.unitQuantities * item.discount_price,
+    0
+  );
+
   return (
     <div className=" m-mt_16px">
       <div className="w-full flex flex-col lg:flex-row items-start justify-center h-full gap-2 ">
@@ -93,7 +99,7 @@ const OrderDetails = () => {
             <table className="overflow-x-auto border w-full">
               <thead className="b w-full">
                 <tr className="text-sm ">
-                  <th className="lg:w-20 md:w-16 w-8 py-2 md:py-4 lg:py-6 border ">
+                  <th className="lg:w-72 md:w-64 w-40 py-2 md:py-4 lg:py-6 border">
                     Image
                   </th>
                   <th className="lg:w-72 md:w-64 w-40 py-2 md:py-4 lg:py-6 border">
@@ -106,39 +112,51 @@ const OrderDetails = () => {
                     Quantity
                   </th>
                   <th className="lg:w-20 md:w-20 w-16  py-2 md:py-4 lg:py-6 border text-center">
-                    Price
+                    Price (BDT)
                   </th>
                   <th className="lg:w-20 md:w-20 w-16  py-2 md:py-4 lg:py-6 border text-center">
-                    Total
+                    Total Price (BDT)
                   </th>
                 </tr>
               </thead>
               <tbody className="md:text-base text-sm font-semibold">
+                {orderDetails?.courseData?.map((course, index) => (
+                  <tr key={index}>
+                    <td className="lg:py-6 md:py-4 py-2 text-center border">
+                      <img className="w-full" src={course?.photo} alt="" />
+                    </td>
+                    <td className="lg:py-6 md:py-4 py-2 text-center border">
+                      {course?.course_name}
+                    </td>
+                    <td className="lg:py-6 md:py-4 py-2 text-center border">
+                      {orderDetails?.fullName}
+                    </td>
+                    <td className="lg:py-6 md:py-4 py-2 text-center border">
+                      {course?.unitQuantities}
+                    </td>
+                    <td className="lg:py-6 md:py-4 py-2 text-center border">
+                      {course?.discount_price}
+                    </td>
+                    <td className="lg:py-6 md:py-4 py-2 text-center border">
+                      {course?.discount_price * course?.unitQuantities}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+              <tfoot className="font-bold">
                 <tr>
-                  <td className="border text-center w-10 h-12 px-2">
-                    <img
-                      className=" w-full h-full object-cover mx-auto"
-                      src=""
-                      alt=""
-                    />
+                  <td
+                    colSpan={5}
+                    className="lg:py-6 md:py-4 py-2 text-center border">
+                    Grand Total Price
                   </td>
-                  <td className="lg:py-6 md:py-4 py-2 text-center border">
-                    Course name
-                  </td>
-                  <td className="lg:py-6 md:py-4 py-2 text-center border">
-                    Student name
-                  </td>
-                  <td className="lg:py-6 md:py-4 py-2 text-center border">
-                    quantity
-                  </td>
-                  <td className="lg:py-6 md:py-4 py-2 text-center border">
-                    price
-                  </td>
-                  <td className="lg:py-6 md:py-4 py-2 text-center border">
-                    total price
+                  <td
+                    colSpan={1}
+                    className="lg:py-6 md:py-4 py-2 text-center border">
+                    {grandTotalPrice}
                   </td>
                 </tr>
-              </tbody>
+              </tfoot>
             </table>
           </div>
         </div>
