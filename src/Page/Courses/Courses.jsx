@@ -1,6 +1,7 @@
 import { useContext, useState } from "react";
 import useProduct from "../../Hooks/useProduct";
 import { BasicContext } from "../../ContextAPIs/BasicProvider";
+import { toast } from "react-toastify";
 
 const Courses = () => {
   const [product, isLoading] = useProduct();
@@ -45,15 +46,27 @@ const Courses = () => {
   // Add to cart
   const addToCart = (course) => {
     const cart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
-    let existingCourse = cart.find((item) => item.id === course.id);
-    if (existingCourse) {
-      existingCourse.unitQuantities += 1;
+
+    if (cart.length > 0) {
+      let existingCourse = cart[0];
+
+      if (existingCourse.id === course.id) {
+        existingCourse.unitQuantities += 1;
+      } else {
+        toast.warn("No more than one course can be added!", {
+          autoClose: 1500,
+        });
+        return;
+      }
     } else {
-      cart.length = 0;
       cart.push({ ...course, unitQuantities: 1 });
+      toast.success("Course added successfully!", {
+        autoClose: 1500,
+      });
     }
 
     localStorage.setItem("CourseDraft", JSON.stringify(cart));
+
     setReload(!reload);
   };
 

@@ -29,12 +29,12 @@ const Checkout = () => {
     blood_group: "",
   });
   console.log(cart);
-  // const navgivate = useNavigate();
-  const courseFee = cart[0].regular_price;
-  const courseQty = cart[0].unitQuantities;
-  const totalCourseFee = 100000;
-  const discountCourseFee = 0;
-  const subTotalCourseFee = 100000;
+  const navgivate = useNavigate();
+  // const courseFee = cart[0].regular_price;
+  // const courseQty = cart[0].unitQuantities;
+  // const totalCourseFee = 100000;
+  // const discountCourseFee = 0;
+  // const subTotalCourseFee = 100000;
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
@@ -58,15 +58,9 @@ const Checkout = () => {
   };
 
   const handlePhotoUpload = () => {
-    if (!file) {
-      alert("Please select a photo first");
-      return;
-    }
     // Create FormData and append the file
     const formData = new FormData();
     formData.append("photo", file);
-
-    console.log(formData);
   };
 
   // Update form state
