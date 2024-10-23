@@ -1,11 +1,13 @@
 import { useContext, useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
-import { Link } from "react-router-dom";
 import { BasicContext } from "../../ContextAPIs/BasicProvider";
+import { OrderContext } from "../../ContextAPIs/OrderProvider";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
   const [cart, setCart] = useState([]);
   const { reload, setReload } = useContext(BasicContext);
+  const { setOrderDetails } = useContext(OrderContext);
   const [formData, setFormData] = useState({
     fullName: "",
     formNo: "",
@@ -24,6 +26,8 @@ const Checkout = () => {
     bloodGroup: "",
   });
 
+  const navgivate = useNavigate();
+
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
 
@@ -35,14 +39,16 @@ const Checkout = () => {
     setFormData({
       ...formData,
       [e.target.id]: e.target.value,
+      courseData: cart,
     });
   };
 
   // Handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Form Data:", formData);
-    // Further processing like API call or data submission
+    setOrderDetails(formData);
+    localStorage.removeItem("CourseDraft");
+    navgivate("/order-details");
   };
 
   // Handle delete course from cart
@@ -224,12 +230,10 @@ const Checkout = () => {
               </label>
               <select
                 id="gender"
-                defaultValue=""
+                defaultValue="default"
                 onChange={handleInputChange}
                 className="w-full border border-gray-300 rounded-md p-2">
-                <option value="" disabled selected>
-                  Select Gender
-                </option>
+                <option value="default">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Others">Other</option>
@@ -337,11 +341,10 @@ const Checkout = () => {
               </label>
               <select
                 id="bloodGroup"
-                defaultValue=""
+                onChange={handleInputChange}
+                defaultValue="default"
                 className="w-full border border-gray-300 rounded-md p-2">
-                <option value="" disabled selected>
-                  Select Blood Group
-                </option>
+                <option value="default">Select Blood Group</option>
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
                 <option value="B+">B+</option>
