@@ -106,7 +106,8 @@ const Courses = () => {
                   <span className="text-green-600 text-md font-bold ml-2">
                     -
                     {(
-                      (course?.regular_price / course?.discount_price) *
+                      ((course?.regular_price - course?.discount_price) /
+                        course?.regular_price) *
                       100
                     ).toFixed(0)}
                     {"%  "}({course?.regular_price - course?.discount_price})

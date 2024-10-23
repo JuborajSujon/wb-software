@@ -15,6 +15,8 @@ const Cart = () => {
     setCart(storedCart);
   }, [reload]);
 
+  console.log(cart);
+
   // Handle delete course from cart
   const handleDelete = (id) => {
     const storedCart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
