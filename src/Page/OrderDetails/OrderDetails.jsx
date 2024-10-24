@@ -11,7 +11,7 @@ const OrderDetails = () => {
   return (
     <div className=" m-mt_16px">
       <div className="w-full flex flex-col lg:flex-row items-start justify-center h-full gap-2 ">
-        <div className="bg-white lg:p-p_30px w-full  ">
+        <div className="bg-white p-4 w-full  ">
           <div className="text-center  flex flex-col justify-center items-center ">
             <p className="text-xl font-bold">Order Information</p>
             <p className="p-3 rounded-md lg:my-2 my-1 w-fit border bg-[#D2C5A2] font-bold text-lg">
@@ -21,9 +21,6 @@ const OrderDetails = () => {
           </div>
           <div className="w-full border flex flex-col md:flex-row md:items-start   md:mt-4 mt-3 bg-[#D2C5A2] rounded-md p-4  ">
             <div className="md:text-base text-sm flex-1  font-semibold   md:border-r-2 md:border-black md:pr-10">
-              <p className="font-bold md:mb-4 w-full">
-                Demo information,Checkout page information will be here{" "}
-              </p>
               <div className="space-y-1 w-full">
                 <div className="flex items-center justify-between">
                   <p>Full Name :</p>
@@ -59,9 +56,6 @@ const OrderDetails = () => {
             </div>
 
             <div className="md:text-base text-sm  flex-1 font-semibold  md:ml-10 mt-m_medium">
-              <p className="font-bold  md:mb-4 w-full">
-                Demo information,Checkout page information will be here{" "}
-              </p>
               <div className="space-y-1 w-full">
                 <div className="flex items-center justify-between">
                   <p>Gender :</p>
