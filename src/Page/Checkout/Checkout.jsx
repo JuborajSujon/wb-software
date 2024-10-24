@@ -94,6 +94,7 @@ const Checkout = () => {
         };
 
         setOrderDetails(newData);
+        localStorage.setItem("orderDetails", JSON.stringify(newData));
         localStorage.setItem("CourseDraft", JSON.stringify([]));
         setReload(!reload);
         navgivate("/order-details");
