@@ -120,7 +120,11 @@ const OrderDetails = () => {
               <tbody className="md:text-base text-sm font-semibold">
                 <tr>
                   <td className="lg:py-6 md:py-4 py-2 text-center border">
-                    <img className="w-full" src={orderDetails?.photo} alt="" />
+                    <img
+                      className="w-[60px] h-[60px]"
+                      src={orderDetails?.photo}
+                      alt=""
+                    />
                   </td>
                   <td className="lg:py-6 md:py-4 py-2 text-center border">
                     {orderDetails?.course_name}
