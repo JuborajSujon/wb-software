@@ -3,38 +3,31 @@ import { RiDeleteBin5Line } from "react-icons/ri";
 import { BasicContext } from "../../ContextAPIs/BasicProvider";
 import { OrderContext } from "../../ContextAPIs/OrderProvider";
 import { useNavigate } from "react-router-dom";
+import { useForm } from "react-hook-form";
+import axios from "axios";
+import { toast } from "react-toastify";
 
 const Checkout = () => {
   const [cart, setCart] = useState([]);
   const { reload, setReload } = useContext(BasicContext);
   const { setOrderDetails } = useContext(OrderContext);
-  const [file, setFile] = useState(null);
-  const [preview, setPreview] = useState(null);
-  const [formData, setFormData] = useState({
-    name: "",
-    formNo: "",
-    father_name: "",
-    father_phone_no: "",
-    school_collage_name: "",
-    job_title: "",
-    email: "",
-    gender: "",
-    present_address: "",
-    permanent_address: "",
-    nid_no: "",
-    phone_no: "",
-    local_guardian_name: "",
-    local_guardian_phone_no: "",
-    date_of_birth: "",
-    blood_group: "",
-  });
-  console.log(cart);
+  const [previewSrc, setPreviewSrc] = useState(null);
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm();
+
   const navgivate = useNavigate();
-  // const courseFee = cart[0].regular_price;
-  // const courseQty = cart[0].unitQuantities;
-  // const totalCourseFee = 100000;
-  // const discountCourseFee = 0;
-  // const subTotalCourseFee = 100000;
+  const courseId = cart.length > 0 ? cart[0].id : 0;
+  const admission_date = new Date().toISOString();
+  const courseFee = cart.length > 0 ? cart[0].regular_price : 0;
+  const courseQty = cart.length > 0 ? cart[0].unitQuantities : 0;
+  const totalCourseFee = courseFee * courseQty;
+  const discountCourseFee = cart.length > 0 ? cart[0].discount_price : 0;
+  const subTotalCourseFee = discountCourseFee * courseQty;
+
+  // console.log(cart);
 
   useEffect(() => {
     const storedCart = JSON.parse(localStorage.getItem("CourseDraft")) || [];
@@ -47,48 +40,71 @@ const Checkout = () => {
     return Math.floor(100000 + Math.random() * 900000).toString();
   };
 
-  // Handle file input change
-  const handleFileChange = (e) => {
-    const selectedFile = e.target.files[0];
-    setFile(selectedFile);
+  // Handle file input change and set preview
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
 
-    // Generate a URL for previewing the image
-    const imageUrl = URL.createObjectURL(selectedFile);
-    setPreview(imageUrl);
-  };
+    if (file && file.type.startsWith("image/")) {
+      const reader = new FileReader();
 
-  const handlePhotoUpload = () => {
-    // Create FormData and append the file
-    const formData = new FormData();
-    formData.append("photo", file);
+      reader.onloadend = () => {
+        setPreviewSrc(reader.result);
+      };
+
+      reader.readAsDataURL(file);
+    } else {
+      setPreviewSrc(null);
+    }
   };
 
   // Update form state
-  const handleInputChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.id]: e.target.value,
-      courseData: cart,
-      formNo: generateFormId(),
-      course_id: 1,
-      admission_date: new Date().toISOString(),
-      course_fee: 0,
-      course_qty: 1,
-      total_course_fee: 100000,
-      discount_course_fee: 0,
-      sub_total_course_fee: 100000,
-    });
-  };
+  const onSubmit = async (data) => {
+    const photo = data.photo[0];
+    const updatadData = {
+      ...data,
+      admission_date,
+      photo,
+      course_id: courseId,
+      course_fee: courseFee,
+      course_qty: courseQty,
+      total_course_fee: totalCourseFee,
+      discount_course_fee: discountCourseFee,
+      sub_total_course_fee: subTotalCourseFee,
+      form_id: generateFormId(),
+    };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    handlePhotoUpload();
-    console.log(formData);
-    // setOrderDetails(formData);
-    // localStorage.setItem("CourseDraft", JSON.stringify([]));
-    // setReload(!reload);
-    // navgivate("/order-details");
+    try {
+      const response = await axios.post(
+        "https://itder.com/api/course-purchase",
+        updatadData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      if (response.status === 201) {
+        toast.success("Purchase successful!", { autoClose: 1500 });
+        // Handle successful submission, e.g., reset form or navigate
+
+        setOrderDetails(response?.data?.coursePurchaseData);
+        localStorage.setItem("CourseDraft", JSON.stringify([]));
+        setReload(!reload);
+        navgivate("/order-details");
+      }
+    } catch (error) {
+      console.log(error);
+      if (error.response) {
+        toast.error(`Error: ${error.response.data.errors[0]}`, {
+          autoClose: 1500,
+        });
+      } else if (error.request) {
+        toast.error("No response from the server!", { autoClose: 1500 });
+      } else {
+        toast.error("An error occurred!", { autoClose: 1500 });
+      }
+    }
   };
 
   // Handle delete course from cart
@@ -150,7 +166,9 @@ const Checkout = () => {
         <h2 className="text-5xl font-bold">Trainee Admission Form</h2>
       </div>
       <form
-        onSubmit={handleSubmit}
+        method="post"
+        encType="multipart/form-data"
+        onSubmit={handleSubmit(onSubmit)}
         className="bg-white shadow-md rounded-lg p-6">
         {/* Trainee Information Section */}
         <div className="form-section">
@@ -164,11 +182,14 @@ const Checkout = () => {
               <input
                 type="text"
                 id="name"
-                value={formData.name}
-                onChange={handleInputChange}
+                {...register("name", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.name && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
+
             <div>
               <label
                 htmlFor="phone_no"
@@ -178,10 +199,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="phone_no"
-                value={formData.phone_no}
-                onChange={handleInputChange}
+                {...register("phone_no", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.phone_no && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
 
@@ -195,10 +218,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="father_name"
-                value={formData.father_name}
-                onChange={handleInputChange}
+                {...register("father_name", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.father_name && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -209,10 +234,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="father_phone_no"
-                value={formData.father_phone_no}
-                onChange={handleInputChange}
+                {...register("father_phone_no", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.father_phone_no && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
 
@@ -226,10 +253,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="school_collage_name"
-                value={formData.school_collage_name}
-                onChange={handleInputChange}
+                {...register("school_collage_name", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.school_collage_name && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -240,10 +269,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="job_title"
-                value={formData.job_title}
-                onChange={handleInputChange}
+                {...register("job_title", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.job_title && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
 
@@ -257,10 +288,12 @@ const Checkout = () => {
               <input
                 type="email"
                 id="email"
-                value={formData.email}
-                onChange={handleInputChange}
+                {...register("email", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.email && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -271,13 +304,16 @@ const Checkout = () => {
               <select
                 id="gender"
                 defaultValue="default"
-                onChange={handleInputChange}
-                className="w-full border border-gray-300 rounded-md p-2">
+                {...register("gender", { required: true })}
+                className="w-full border border-gray-300 rounded-md p-2.5">
                 <option value="default">Select Gender</option>
                 <option value="Male">Male</option>
                 <option value="Female">Female</option>
                 <option value="Others">Other</option>
               </select>
+              {errors.gender && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
 
@@ -290,10 +326,12 @@ const Checkout = () => {
               </label>
               <textarea
                 id="present_address"
-                value={formData.present_address}
-                onChange={handleInputChange}
+                {...register("present_address", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.present_address && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -303,10 +341,12 @@ const Checkout = () => {
               </label>
               <textarea
                 id="permanent_address"
-                value={formData.permanent_address}
-                onChange={handleInputChange}
+                {...register("permanent_address", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.permanent_address && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
 
@@ -320,10 +360,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="nid_no"
-                value={formData.nid_no}
-                onChange={handleInputChange}
+                {...register("nid_no", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.nid_no && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -333,9 +375,9 @@ const Checkout = () => {
               </label>
               <select
                 id="blood_group"
-                onChange={handleInputChange}
                 defaultValue="default"
-                className="w-full border border-gray-300 rounded-md p-2">
+                {...register("blood_group", { required: true })}
+                className="w-full border border-gray-300 rounded-md p-2.5">
                 <option value="default">Select Blood Group</option>
                 <option value="A+">A+</option>
                 <option value="A-">A-</option>
@@ -346,6 +388,9 @@ const Checkout = () => {
                 <option value="O+">O+</option>
                 <option value="O-">O-</option>
               </select>
+              {errors.blood_group && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
 
@@ -359,10 +404,12 @@ const Checkout = () => {
               <input
                 type="text"
                 id="local_guardian_name"
-                value={formData.local_guardian_name}
-                onChange={handleInputChange}
+                {...register("local_guardian_name", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.local_guardian_name && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -373,10 +420,14 @@ const Checkout = () => {
               <input
                 type="text"
                 id="local_guardian_phone_no"
-                value={formData.local_guardian_phone_no}
-                onChange={handleInputChange}
+                {...register("local_guardian_phone_no", {
+                  required: true,
+                })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.local_guardian_phone_no && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
@@ -389,10 +440,12 @@ const Checkout = () => {
               <input
                 type="date"
                 id="date_of_birth"
-                value={formData.date_of_birth}
-                onChange={handleInputChange}
+                {...register("date_of_birth", { required: true })}
                 className="w-full border border-gray-300 rounded-md p-2"
               />
+              {errors.date_of_birth && (
+                <span className="text-red-500">This field is required</span>
+              )}
             </div>
             <div>
               <label
@@ -404,14 +457,25 @@ const Checkout = () => {
                 type="file"
                 accept="image/*"
                 id="photo"
+                // name="photo"
                 onChange={handleFileChange}
-                className="w-full border border-gray-300 rounded-md p-2"
+                {...register("photo", { required: true })}
+                className="w-full border border-gray-300 rounded-md p-1.5"
               />
 
-              {preview && (
+              {errors.photo && (
+                <span className="text-red-500">This field is required</span>
+              )}
+
+              {/* Image Preview */}
+              {previewSrc && (
                 <div>
-                  <h3>Image Preview:</h3>
-                  <img src={preview} alt="Preview" width="200px" />
+                  <h4>Image Preview:</h4>
+                  <img
+                    src={previewSrc}
+                    alt="Preview"
+                    style={{ maxWidth: "150px", marginTop: "10px" }}
+                  />
                 </div>
               )}
             </div>

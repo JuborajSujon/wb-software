@@ -83,7 +83,7 @@ const Cart = () => {
                     Course
                   </th>
                   <th className="text-[14.4px] font-bold p-[7px] text-black">
-                    Price
+                    Discount Price
                   </th>
                   <th className="text-[14.4px] font-bold p-[7px] text-black">
                     Quantity
