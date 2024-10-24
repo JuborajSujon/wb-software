@@ -62,19 +62,21 @@ const Search = () => {
       <div>
         {searchResults ? (
           <div className=" m-mt_16px">
-            <div className="w-full flex flex-col lg:flex-row items-start justify-center h-full gap-2 ">
-              <div className="bg-white lg:p-p_30px w-full  ">
+            <div className="w-full flex flex-col lg:flex-row items-start justify-center h-full gap-2">
+              <div className="bg-white p-4 w-full  ">
                 <div className="text-center  flex flex-col justify-center items-center ">
-                  <p className="text-xl font-bold">Order Information</p>
-                  <p className="p-3 rounded-md lg:my-2 my-1 w-fit border bg-[hsl(253,64%,84%)] font-bold text-lg">
+                  <p className="text-base sm:text-xl font-bold">
+                    Order Information
+                  </p>
+                  <p className="p-3 rounded-md lg:my-2 my-1 w-fit border bg-[hsl(253,64%,84%)] font-bold text-base sm:text-xl">
                     Order Id :
-                    <span className="font-semibold">
+                    <span className="font-semibold ">
                       {" "}
                       {searchResults?.form_no}
                     </span>
                   </p>
                 </div>
-                <div className="w-full border flex flex-col md:flex-row md:items-start   md:mt-4 mt-3 bg-[hsl(253,64%,84%)] rounded-md p-4  ">
+                <div className="w-full border flex flex-col md:flex-row md:items-start   md:mt-4 mt-3 bg-[hsl(253,64%,84%)] rounded-md p-4 ">
                   <div className="md:text-base text-sm flex-1  font-semibold   md:border-r-2 md:border-black md:pr-10">
                     <div className="space-y-1 w-full">
                       <div className="flex items-center justify-between">
@@ -153,7 +155,9 @@ const Search = () => {
                 </div>
 
                 <div className="lg:my-8 md:my-6 my-8 px-p_4px">
-                  <p className=" md:my-2 font-semibold">Courses:</p>
+                  <p className=" md:my-2 font-semibold text-xl sm:text-2xl md:text-3xl">
+                    Courses:
+                  </p>
                   <table className="overflow-x-auto border w-full">
                     <thead className="b w-full">
                       <tr className="text-sm ">
@@ -172,7 +176,7 @@ const Search = () => {
                         <th className="lg:w-20 md:w-20 w-16  py-2 md:py-4 lg:py-6 border text-center">
                           Price (BDT)
                         </th>
-                        <th className="lg:w-20 md:w-20 w-16  py-2 md:py-4 lg:py-6 border text-center">
+                        <th className="lg:w-24 md:w-20 w-16  py-2 md:py-4 lg:py-6 border text-center">
                           Total Price (BDT)
                         </th>
                       </tr>
@@ -203,11 +207,11 @@ const Search = () => {
                         </td>
                       </tr>
                     </tbody>
-                    <tfoot className="font-bold">
+                    <tfoot className="font-bold text-xl">
                       <tr>
                         <td
                           colSpan={5}
-                          className="lg:py-6 md:py-4 py-2 text-center border">
+                          className="lg:py-6 md:py-4 py-2 text-center  border">
                           Grand Total Price
                         </td>
                         <td
