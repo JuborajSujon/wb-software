@@ -3,14 +3,7 @@ import { OrderContext } from "../../ContextAPIs/OrderProvider";
 
 const OrderDetails = () => {
   const { orderDetails } = useContext(OrderContext);
-
-  const grandTotalPrice =
-    orderDetails?.courseData?.length > 0
-      ? orderDetails.courseData.reduce(
-          (total, item) => total + item.unitQuantities * item.discount_price,
-          0
-        )
-      : 0;
+  console.log(orderDetails);
 
   return (
     <div className=" m-mt_16px">
@@ -20,7 +13,7 @@ const OrderDetails = () => {
             <p className="text-xl font-bold">Order Information</p>
             <p className="p-3 rounded-md lg:my-2 my-1 w-fit border bg-[#D2C5A2] font-bold text-lg">
               Order Id :
-              <span className="font-semibold"> {orderDetails?.formNo}</span>
+              <span className="font-semibold"> {orderDetails?.form_no}</span>
             </p>
           </div>
           <div className="w-full border flex flex-col md:flex-row md:items-start   md:mt-4 mt-3 bg-[#D2C5A2] rounded-md p-4  ">
@@ -31,11 +24,11 @@ const OrderDetails = () => {
               <div className="space-y-1 w-full">
                 <div className="flex items-center justify-between">
                   <p>Full Name :</p>
-                  <p className="text-start">{orderDetails?.fullName}</p>
+                  <p className="text-start">{orderDetails?.name}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Mobile :</p>
-                  <p>{orderDetails?.mobile}</p>
+                  <p>{orderDetails?.phone_no}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Email :</p>
@@ -43,19 +36,21 @@ const OrderDetails = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Father/Mother Name :</p>
-                  <p className="text-start">{orderDetails?.parentName}</p>
+                  <p className="text-start">{orderDetails?.father_name}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Parent Mobile :</p>
-                  <p>{orderDetails?.parentNumber}</p>
+                  <p>{orderDetails?.father_phone_no}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>School/Collage Name :</p>
-                  <p className="text-start">{orderDetails?.school}</p>
+                  <p className="text-start">
+                    {orderDetails?.school_collage_name}
+                  </p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Job Info :</p>
-                  <p>{orderDetails?.jobInfo}</p>
+                  <p>{orderDetails?.job_title}</p>
                 </div>
               </div>
             </div>
@@ -71,27 +66,27 @@ const OrderDetails = () => {
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Present Address :</p>
-                  <p className="text-start">{orderDetails?.presentAddress}</p>
+                  <p className="text-start">{orderDetails?.present_address}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Permanent Address :</p>
-                  <p>{orderDetails?.permanentAddress}</p>
+                  <p>{orderDetails?.permanent_address}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>NID NO :</p>
-                  <p className="text-start">{orderDetails?.nid}</p>
+                  <p className="text-start">{orderDetails?.nid_no}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Guardian Name :</p>
-                  <p>{orderDetails?.guardianName}</p>
+                  <p>{orderDetails?.local_guardian_name}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Date Of Birth :</p>
-                  <p className="text-start">{orderDetails?.dob}</p>
+                  <p className="text-start">{orderDetails?.date_of_birth}</p>
                 </div>
                 <div className="flex items-center justify-between">
                   <p>Blood Group :</p>
-                  <p className="text-start">{orderDetails?.bloodGroup}</p>
+                  <p className="text-start">{orderDetails?.blood_group}</p>
                 </div>
               </div>
             </div>
@@ -123,28 +118,26 @@ const OrderDetails = () => {
                 </tr>
               </thead>
               <tbody className="md:text-base text-sm font-semibold">
-                {orderDetails?.courseData?.map((course, index) => (
-                  <tr key={index}>
-                    <td className="lg:py-6 md:py-4 py-2 text-center border">
-                      <img className="w-full" src={course?.photo} alt="" />
-                    </td>
-                    <td className="lg:py-6 md:py-4 py-2 text-center border">
-                      {course?.course_name}
-                    </td>
-                    <td className="lg:py-6 md:py-4 py-2 text-center border">
-                      {orderDetails?.fullName}
-                    </td>
-                    <td className="lg:py-6 md:py-4 py-2 text-center border">
-                      {course?.unitQuantities}
-                    </td>
-                    <td className="lg:py-6 md:py-4 py-2 text-center border">
-                      {course?.discount_price}
-                    </td>
-                    <td className="lg:py-6 md:py-4 py-2 text-center border">
-                      {course?.discount_price * course?.unitQuantities}
-                    </td>
-                  </tr>
-                ))}
+                <tr>
+                  <td className="lg:py-6 md:py-4 py-2 text-center border">
+                    <img className="w-full" src={orderDetails?.photo} alt="" />
+                  </td>
+                  <td className="lg:py-6 md:py-4 py-2 text-center border">
+                    {orderDetails?.course_name}
+                  </td>
+                  <td className="lg:py-6 md:py-4 py-2 text-center border">
+                    {orderDetails?.name}
+                  </td>
+                  <td className="lg:py-6 md:py-4 py-2 text-center border">
+                    {orderDetails?.course_qty}
+                  </td>
+                  <td className="lg:py-6 md:py-4 py-2 text-center border">
+                    {orderDetails?.discount_course_fee}
+                  </td>
+                  <td className="lg:py-6 md:py-4 py-2 text-center border">
+                    {orderDetails?.sub_total_course_fee}
+                  </td>
+                </tr>
               </tbody>
               <tfoot className="font-bold">
                 <tr>
@@ -156,7 +149,7 @@ const OrderDetails = () => {
                   <td
                     colSpan={1}
                     className="lg:py-6 md:py-4 py-2 text-center border">
-                    {grandTotalPrice}
+                    {orderDetails?.sub_total_course_fee}
                   </td>
                 </tr>
               </tfoot>

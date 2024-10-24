@@ -87,8 +87,13 @@ const Checkout = () => {
       if (response.status === 201) {
         toast.success("Purchase successful!", { autoClose: 1500 });
         // Handle successful submission, e.g., reset form or navigate
+        let data = response?.data?.coursePurchaseData;
+        const newData = {
+          ...data,
+          course_name: cart[0].course_name,
+        };
 
-        setOrderDetails(response?.data?.coursePurchaseData);
+        setOrderDetails(newData);
         localStorage.setItem("CourseDraft", JSON.stringify([]));
         setReload(!reload);
         navgivate("/order-details");
