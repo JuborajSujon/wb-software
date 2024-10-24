@@ -4,7 +4,7 @@ const OrderDetails = () => {
   const [orderDetails, setOrderDetails] = useState();
 
   useEffect(() => {
-    const orderDetails = JSON.parse(localStorage.getItem("OrderDetails"));
+    const orderDetails = JSON.parse(localStorage.getItem("orderDetails"));
     setOrderDetails(orderDetails);
   }, []);
 
