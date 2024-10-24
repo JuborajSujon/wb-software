@@ -1,9 +1,12 @@
-import { useContext } from "react";
-import { OrderContext } from "../../ContextAPIs/OrderProvider";
+import { useEffect, useState } from "react";
 
 const OrderDetails = () => {
-  const { orderDetails } = useContext(OrderContext);
-  console.log(orderDetails);
+  const [orderDetails, setOrderDetails] = useState();
+
+  useEffect(() => {
+    const orderDetails = JSON.parse(localStorage.getItem("OrderDetails"));
+    setOrderDetails(orderDetails);
+  }, []);
 
   return (
     <div className=" m-mt_16px">

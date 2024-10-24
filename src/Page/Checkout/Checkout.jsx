@@ -1,7 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { RiDeleteBin5Line } from "react-icons/ri";
 import { BasicContext } from "../../ContextAPIs/BasicProvider";
-import { OrderContext } from "../../ContextAPIs/OrderProvider";
 import { useNavigate } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import axios from "axios";
@@ -10,7 +9,6 @@ import { toast } from "react-toastify";
 const Checkout = () => {
   const [cart, setCart] = useState([]);
   const { reload, setReload } = useContext(BasicContext);
-  const { setOrderDetails } = useContext(OrderContext);
   const [previewSrc, setPreviewSrc] = useState(null);
   const {
     register,
@@ -93,7 +91,6 @@ const Checkout = () => {
           course_name: cart[0].course_name,
         };
 
-        setOrderDetails(newData);
         localStorage.setItem("orderDetails", JSON.stringify(newData));
         localStorage.setItem("CourseDraft", JSON.stringify([]));
         setReload(!reload);

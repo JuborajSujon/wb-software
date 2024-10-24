@@ -5,7 +5,6 @@ const OrderProvider = ({ children }) => {
   const [examID, setExamID] = useState(null);
   const [open, setOpen] = useState(true);
   const sidebarRef = useRef(null);
-  const [orderDetails, setOrderDetails] = useState({});
 
   const info = {
     examID,
@@ -13,8 +12,6 @@ const OrderProvider = ({ children }) => {
     open,
     setOpen,
     sidebarRef,
-    orderDetails,
-    setOrderDetails,
   };
   return <OrderContext.Provider value={info}>{children}</OrderContext.Provider>;
 };
